@@ -17,57 +17,54 @@ type DbConfig struct {
 	Config Config
 }
 
-type Cluster struct {
-	Password string `json:"password"`
-	Username string `json:"username"`
+type Version struct {
+	Value      string    `json:"value"`
+	LastDeploy time.Time `json:"last_deploy"`
 }
 
 type Services struct {
-	Url      string `json:"url"`
-	Name     string `json:"name"`
-	Versions []time.Time
+	Url      string    `json:"url"`
+	Name     string    `json:"name"`
+	Versions []Version `json:"versions"`
 }
 
 type Config struct {
-	Version    string     `json:"version"`
-	LastUpdate time.Time  `json:"last_update"`
-	Cluster    Cluster    `json:"cluster"`
-	Services   []Services `json:"services"`
+	Version    string      `json:"version"`
+	LastUpdate time.Time   `json:"last_update"`
+	Services   []*Services `json:"services"`
 }
 
-func (self *DbConfig) Init(projectId string) {
+func (self *DbConfig) Init(projectId string) error {
 	ctx := context.Background()
 	storageClient, err := storage.NewClient(ctx)
 	if err != nil {
-		log.Fatalf("Failed to create client: %v", err)
+		return err
 	}
 	bucketName := projectId + "-config"
 	self.bucket = storageClient.Bucket(bucketName)
 	_, err = self.bucket.Attrs(ctx)
-
 	if err != nil {
-		log.Fatal("Bucket for config doesnt exist")
+		return err
 	}
+	return nil
 }
 
-func (self *DbConfig) Load() {
+func (self *DbConfig) Load() error {
 	ctx := context.Background()
 	rc, err := self.bucket.Object("config.json").NewReader(ctx)
-	defer rc.Close()
 	if err != nil {
-		log.Fatal("Unable to load the config file")
-		return
+		return err
 	}
 	data, err := ioutil.ReadAll(rc)
 	if err != nil {
-		log.Fatal("Unable to load the config file")
-		return
+		return err
 	}
 	err = json.Unmarshal(data, &self.Config)
 	if err != nil {
-		log.Fatal("Unable to load the config file")
-		return
+		return err
 	}
+	rc.Close()
+	return nil
 }
 
 func (self *DbConfig) Save() {
@@ -84,7 +81,7 @@ func (self *DbConfig) Save() {
 	}
 }
 
-func (self *DbConfig) Initialize() {
+func (self *DbConfig) Initialize() error {
 	ctx := context.Background()
 	wr := self.bucket.Object("config.json").NewWriter(ctx)
 	defer wr.Close()
@@ -95,11 +92,12 @@ func (self *DbConfig) Initialize() {
 	}
 	b, err := json.Marshal(config)
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	if _, err := io.Copy(wr, bytes.NewReader(b)); err != nil {
-		log.Fatal(err)
+		return err
 	}
+	return nil
 }
 
 func GetConfig(projectId string) (DbConfig, error) {

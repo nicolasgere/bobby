@@ -1,14 +1,13 @@
 package main
 
 import (
+	commands3 "bobby/commands/deploy"
+	commands "bobby/commands/init"
+	commands2 "bobby/commands/services"
 	"github.com/urfave/cli"
 	"log"
 	"math/rand"
 	"os"
-	commands3 "tempv2/commands/deploy"
-	commands "tempv2/commands/init"
-	commands2 "tempv2/commands/services"
-
 	"time"
 )
 
@@ -24,10 +23,11 @@ func main() {
 			Action:  commands.Init,
 		},
 		{
-			Name:    "deploy",
-			Aliases: []string{"d"},
-			Usage:   "Deploy ",
-			Action:  commands3.Deploy,
+			Name:      "deploy",
+			Aliases:   []string{"d"},
+			Usage:     "Deploy ",
+			ArgsUsage: "[SERVICE_NAME] [DOCKER_IMAGE]",
+			Action:    commands3.Deploy,
 		},
 
 		{
@@ -42,6 +42,19 @@ func main() {
 					Usage:     "Create a new services",
 					ArgsUsage: "[NAME] [URL]",
 					Action:    commands2.ServicesCreate,
+				},
+				{
+					Name:    "list",
+					Aliases: []string{"l"},
+					Usage:   "List all services",
+					Action:  commands2.ServicesList,
+				},
+				{
+					Name:      "delete",
+					Aliases:   []string{"d"},
+					ArgsUsage: "[NAME]",
+					Usage:     "Delete service",
+					Action:    commands2.ServicesDelete,
 				},
 			},
 		},
