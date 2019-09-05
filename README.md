@@ -2,7 +2,7 @@
 
 🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between cost and simplicity. We want both !
 
-<img align="right" src="changeit" height="280">
+<img align="right" src="docs/render1567719809690.gif" height="280">
 
 - Deploy everything in one command
 - Container first
@@ -14,7 +14,7 @@
 - Network
 
 
-[![Build Status](https://travis-ci.org/release-it/release-it.svg?branch=master)](https://travis-ci.org/release-it/release-it)
+[![Build Status](https://dev.azure.com/mybobby/bobby-cli/_apis/build/status/nicolasgere.bobby?branchName=master)](https://dev.azure.com/mybobby/bobby-cli/_build/latest?definitionId=1&branchName=master)
 
 
 ## Getting started
