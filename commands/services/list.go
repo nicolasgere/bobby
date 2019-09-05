@@ -33,7 +33,6 @@ func ServicesList(c *cli.Context) {
 		return
 	}
 	step.Complete()
-	compute, _ := compute.NewService(ctx)
 
 	//// GET CLUSTER
 	step = services.NewStepper("Accessing kubernetes cluster")

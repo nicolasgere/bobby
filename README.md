@@ -1,6 +1,6 @@
 # Bobby 🚀
 
-🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between coast and simplicity. We want both !
+🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between cost and simplicity. We want both !
 
 <img align="right" src="changeit" height="280">
 
@@ -9,9 +9,9 @@
 - HTTPS by default
 - On-premise, Bobby is just like your personnal DevOps
 - Continious integration
-- What else 1
-- What else 1
-- What else 1
+- Monitoring
+- Alertin
+- Network
 
 
 [![Build Status](https://travis-ci.org/release-it/release-it.svg?branch=master)](https://travis-ci.org/release-it/release-it)
@@ -25,7 +25,7 @@ Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to in
 
 This is our feature roadmap. If you want to ask a new feature. Please open an issue
 
-###### Preview
+##### v1
 - [x] Public web service support
 - [x] HTTPS support
 - [x] GCP support
@@ -35,14 +35,14 @@ This is our feature roadmap. If you want to ask a new feature. Please open an is
 - [ ] Manual scalling
 
 
-###### Alpha
+##### v2
 - [ ] Simple auto scalling
 - [ ] Basic CI/CD
 - [ ] Basic cost report
 - [ ] CDN support
 - [ ] Image registry management
 
-###### Beta
+##### v3
 - [ ] Complexe auto scalling
 - [ ] Multizone support
 - [ ] Alerting
