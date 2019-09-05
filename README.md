@@ -3,7 +3,7 @@
 🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between cost and simplicity. We want both !
 
 <img align="right" src="docs/render1567721170211.gif" height="380">
-
+<br>
 - Deploy everything in one command
 - Container first
 - HTTPS by default
