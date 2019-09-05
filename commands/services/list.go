@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
-	"google.golang.org/api/compute/v1"
 	"google.golang.org/api/container/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 

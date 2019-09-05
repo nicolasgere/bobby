@@ -1,23 +1,52 @@
-<h1 align="center">Welcome to bobby 👋</h1>
-<p>
-  <a href="https://www.npmjs.com/package/bobby">
-    <img alt="Version" src="https://img.shields.io/npm/v/bobby.svg">
-  </a>
-</p>
+# Bobby 🚀
 
-> Why do we need to choose between &#34;be simple as heroku&#34; or &#34;cheap as aws/gcp/azure etc&#34;. Bobby is your next companion to manage your own cloud infrastructure as simple as heroku. Deploy new web application in a minute with bobby, your new companion.
+🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between coast and simplicity. We want both !
 
-## Install
+<img align="right" src="changeit" height="280">
 
-```sh
-curl https://github.com/nicolasgere/bobby/releases/blabla | sh
-```
+- Deploy everything in one command
+- Container first
+- HTTPS by default
+- On-premise, Bobby is just like your personnal DevOps
+- Continious integration
+- What else 1
+- What else 1
+- What else 1
 
-## Usage
 
-```sh
-bobby --help
-```
+[![Build Status](https://travis-ci.org/release-it/release-it.svg?branch=master)](https://travis-ci.org/release-it/release-it)
+
+
+## Getting started
+Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to install bobby and start using it
+
+
+## Feature roadmap
+
+This is our feature roadmap. If you want to ask a new feature. Please open an issue
+
+###### Preview
+[X] Public web service support
+[X] HTTPS support
+[X] GCP support
+[X] Kubernetes cluster creation
+[ ] Secret managament
+[ ] Log management
+[ ] Manual scalling
+
+
+###### Alpha
+[ ] Simple auto scalling
+[ ] Basic CI/CD
+[ ] Basic cost report
+[ ] CDN support
+[ ] Image registry management
+
+###### Beta
+[ ] Complexe auto scalling
+[ ] Multizone support
+[ ] Alerting
+
 
 ## Author
 
