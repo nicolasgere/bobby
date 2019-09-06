@@ -28,6 +28,7 @@ steps:
   displayName: 'Set up the Go workspace'
 
 - script: |
+    VERSION=$(cat version)
     go version
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     dep ensure
@@ -46,7 +47,7 @@ steps:
     #target: '$(Build.SourceVersion)' # Required when action == Create || Action == Edit
     tagSource: 'auto' # Required when action == Create# Options: auto, manual
     #tagPattern: # Optional
-    #tag: # Required when action == Edit || Action == Delete || TagSource == Manual
+    tag: $(VERSION)
     #title: # Optional
     #releaseNotesSource: 'file' # Optional. Options: file, input
     #releaseNotesFile: # Optional
@@ -54,8 +55,8 @@ steps:
     assets: '$(Build.ArtifactStagingDirectory)/*' # Optional
     #assetUploadMode: 'delete' # Optional. Options: delete, replace
     #isDraft: false # Optional
-    isPreRelease: true # Optional
+    isPreRelease: false # Optional
     #addChangeLog: true # Optional
     #compareWith: 'lastFullRelease' # Required when addChangeLog == True. Options: lastFullRelease, lastRelease, lastReleaseByTag
-    #releaseTag: # Required when compareWith == LastReleaseByTag
+    releaseTag: $(VERSION)
 
