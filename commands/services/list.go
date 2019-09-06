@@ -2,23 +2,15 @@ package commands
 
 import (
 	"bobby/services"
-	"context"
-	"encoding/base64"
 	"fmt"
 	"github.com/olekukonko/tablewriter"
 	"github.com/urfave/cli"
-	"google.golang.org/api/container/v1"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
-
-	"k8s.io/client-go/kubernetes"
-	"k8s.io/client-go/rest"
-	"log"
 	"os"
 )
 
 func ServicesList(c *cli.Context) {
 
-	ctx := context.Background()
 	/////////  STEP 1 GET CONFIG
 	step := services.NewStepper("Loading config")
 	p, err := services.GetBobbyProject()
@@ -36,33 +28,7 @@ func ServicesList(c *cli.Context) {
 
 	//// GET CLUSTER
 	step = services.NewStepper("Accessing kubernetes cluster")
-	containerService, _ := container.NewService(ctx)
-	resp, err := containerService.Projects.Locations.Clusters.List("projects/" + p.ProjectId + "/locations/-").Do()
-	if err != nil {
-		step.Fail("Not able to list cluster")
-		log.Fatal(err)
-		return
-	}
-	index := services.FindCluster(resp.Clusters, "bobby-cluster")
-	if index == -1 {
-		step.Fail("You dont have any bobby cluster ready")
-		return
-	}
-	cluster := resp.Clusters[index]
-	cert, err := base64.StdEncoding.DecodeString(cluster.MasterAuth.ClusterCaCertificate)
-	if err != nil {
-		step.Fail(err.Error())
-		return
-	}
-
-	kub, err := kubernetes.NewForConfig(&rest.Config{
-		Username: cluster.MasterAuth.Username,
-		Password: cluster.MasterAuth.Password,
-		Host:     cluster.Endpoint,
-		TLSClientConfig: rest.TLSClientConfig{
-			CAData: cert,
-		},
-	})
+	kub, err := services.GetCluster(p.ProjectId)
 	if err != nil {
 		step.Fail(err.Error())
 		return
@@ -72,7 +38,9 @@ func ServicesList(c *cli.Context) {
 	data := [][]string{}
 
 	serv, err := kub.ExtensionsV1beta1().Ingresses("default").Get("bobby-ingress", v1.GetOptions{})
-
+	if err == nil {
+		fmt.Printf("Endpoint IP: %s \n", serv.Status.LoadBalancer.Ingress[0].IP)
+	}
 	for _, s := range dbc.Config.Services {
 		if s.Versions == nil {
 			s.Versions = []services.Version{}
@@ -89,7 +57,7 @@ func ServicesList(c *cli.Context) {
 			if err != nil {
 				continue
 			}
-			endpoint = fmt.Sprintf("%s (%s)", s.Url, serv.Status.LoadBalancer.Ingress[0].IP)
+			endpoint = fmt.Sprintf("%s", s.Url)
 			status = fmt.Sprintf("%d / %d (%d)", deployment.Status.ReadyReplicas, deployment.Status.Replicas, deployment.Status.UnavailableReplicas)
 		}
 		data = append(data, []string{

@@ -3,57 +3,86 @@ package commands
 import (
 	"bobby/services"
 	"context"
-	"fmt"
+	"encoding/base64"
 	"github.com/urfave/cli"
-	"google.golang.org/api/cloudresourcemanager/v1"
+	"google.golang.org/api/container/v1"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
+	"k8s.io/client-go/rest"
 
 	"log"
-	"strings"
 )
 
 func ServicesDelete(c *cli.Context) {
 	ctx := context.Background()
-
-	///////// DEPLOY NEW VERSION OF IMAGE\
 
 	name := c.Args().Get(0)
 	if name == "" {
 		log.Fatal("first arg name is required")
 	}
 
-	cloudResourceService, err := cloudresourcemanager.NewService(ctx)
+	/////////  STEP 1 GET CONFIG
+	step := services.NewStepper("Loading config")
+	p, err := services.GetBobbyProject()
 	if err != nil {
-		fmt.Println("Error during getting gcloud access")
-		fmt.Println(err)
+		step.Fail("Not able to found a project. Did you init a bobby project in gloud?")
 		return
 	}
-	responseProjects, _ := cloudResourceService.Projects.List().Do()
-	var project *cloudresourcemanager.Project
-	for _, p := range responseProjects.Projects {
-		if p.LifecycleState == "ACTIVE" && strings.Contains(p.Name, BASE_NAME) {
-			project = p
-		}
-	}
-	if project == nil {
-		fmt.Println("No bobby project found, did you init it?")
+	//TODO VERIFY PROJECT IS READY
+	dbc, err := services.GetConfig(p.ProjectId)
+	if err != nil {
+		step.Fail(err.Error())
 		return
 	}
+	step.Complete()
 
-	dbC := services.DbConfig{}
-	dbC.Init(project.ProjectId)
-	dbC.Load()
+	step = services.NewStepper("Deleting services")
 	found := -1
-	for i, s := range dbC.Config.Services {
+	for i, s := range dbc.Config.Services {
 		if s.Name == name {
 			found = i
 			break
 		}
 	}
 	if found == -1 {
-		fmt.Println("NOTf found")
+		step.Fail("Didnt found services")
 		return
 	}
-	dbC.Config.Services = append(dbC.Config.Services[:found], dbC.Config.Services[found+1:]...)
-	dbC.Save()
+	///////// DEPLOY NEW VERSION OF IMAGE\
+	containerService, _ := container.NewService(ctx)
+	resp, err := containerService.Projects.Locations.Clusters.List("projects/" + p.ProjectId + "/locations/-").Do()
+	if err != nil {
+		step.Fail("Not able to list cluster")
+		log.Fatal(err)
+		return
+	}
+	index := services.FindCluster(resp.Clusters, "bobby-cluster")
+	if index == -1 {
+		step.Fail("You dont have any bobby cluster ready")
+		return
+	}
+	cluster := resp.Clusters[index]
+	cert, err := base64.StdEncoding.DecodeString(cluster.MasterAuth.ClusterCaCertificate)
+	if err != nil {
+		step.Fail(err.Error())
+		return
+	}
+
+	kub, err := kubernetes.NewForConfig(&rest.Config{
+		Username: cluster.MasterAuth.Username,
+		Password: cluster.MasterAuth.Password,
+		Host:     cluster.Endpoint,
+		TLSClientConfig: rest.TLSClientConfig{
+			CAData: cert,
+		},
+	})
+	err = kub.CoreV1().Services("default").Delete(dbc.Config.Services[found].Name, &v1.DeleteOptions{})
+	if err != nil {
+		step.Fail(err.Error())
+		return
+	}
+	dbc.Config.Services = append(dbc.Config.Services[:found], dbc.Config.Services[found+1:]...)
+	dbc.Save()
+	step.Complete()
 
 }
