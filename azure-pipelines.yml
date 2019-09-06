@@ -28,7 +28,7 @@ steps:
   displayName: 'Set up the Go workspace'
 
 - script: |
-    VERSION=$(cat version)
+    VERSION_PACKAGE=$(cat version) && echo "##vso[task.setvariable variable=VERSION_PACKAGE]$VERSION_PACKAGE"
     go version
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     dep ensure
