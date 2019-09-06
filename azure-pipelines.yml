@@ -33,8 +33,8 @@ steps:
     curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
     dep ensure
     mkdir releases
-    go build -v -o $(Build.ArtifactStagingDirectory)/bobby-linux .
-    env GOOS=darwin GOARCH=amd64 go build -v -o $(Build.ArtifactStagingDirectory)/bobby-mac .
+    go build -v -o $(Build.ArtifactStagingDirectory)/bobby-debian .
+    env GOOS=darwin GOARCH=amd64 go build -v -o $(Build.ArtifactStagingDirectory)/bobby-osx .
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies, then build'
   # GitHub Release
@@ -45,7 +45,7 @@ steps:
     repositoryName: '$(Build.Repository.Name)'
     tagSource: 'manual' # Required when action == Create# Options: auto, manual
     #tagPattern: # Optional
-    tag: $(VERSION)
+    tag: $(VERSION_PACKAGE)
     #title: # Optional
     #releaseNotesSource: 'file' # Optional. Options: file, input
     #releaseNotesFile: # Optional
