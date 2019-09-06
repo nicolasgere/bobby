@@ -2,8 +2,17 @@
 
 🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between cost and simplicity. We want both !
 
-<img align="right" src="docs/render1567721170211.gif" height="280">
+<img src="docs/render1567721170211.gif" height="480">
+<br>
 
+
+[![Build Status](https://dev.azure.com/mybobby/bobby-cli/_apis/build/status/nicolasgere.bobby?branchName=master)](https://dev.azure.com/mybobby/bobby-cli/_build/latest?definitionId=1&branchName=master)
+
+
+
+
+## Getting started
+Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to install bobby and start using it
 - Deploy everything in one command
 - Container first
 - HTTPS by default
@@ -12,13 +21,6 @@
 - Monitoring
 - Alertin
 - Network
-
-
-[![Build Status](https://dev.azure.com/mybobby/bobby-cli/_apis/build/status/nicolasgere.bobby?branchName=master)](https://dev.azure.com/mybobby/bobby-cli/_build/latest?definitionId=1&branchName=master)
-
-
-## Getting started
-Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to install bobby and start using it
 
 
 ## Feature roadmap
