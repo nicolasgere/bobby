@@ -27,28 +27,28 @@ Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to in
 
 This is our feature roadmap. If you want to ask a new feature. Please open an issue
 
-##### v1
+##### v0.1 Alpha
 - [x] Public web service support
 - [x] HTTPS support
 - [x] GCP support
 - [x] Kubernetes cluster creation
-- [ ] Secret managament
-- [ ] Log management
-- [ ] Manual scalling
+- [X] Secret managament
+- [X] Manual scalling
 
 
-##### v2
+##### v1 Release
+- [ ] Statefull app support
 - [ ] Simple auto scalling
 - [ ] Basic CI/CD
 - [ ] Basic cost report
 - [ ] CDN support
 - [ ] Image registry management
 
-##### v3
+##### Backlog
 - [ ] Complexe auto scalling
 - [ ] Multizone support
 - [ ] Alerting
-
+- [ ] Complexe auto scalling
 
 ## Author
 

@@ -29,9 +29,10 @@ type Services struct {
 }
 
 type Config struct {
-	Version    string      `json:"version"`
-	LastUpdate time.Time   `json:"last_update"`
-	Services   []*Services `json:"services"`
+	Version      string      `json:"version"`
+	LastUpdate   time.Time   `json:"last_update"`
+	Services     []*Services `json:"services"`
+	Environments []string    `json:"environments"`
 }
 
 func (self *DbConfig) Init(projectId string) error {

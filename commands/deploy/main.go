@@ -6,6 +6,7 @@ import (
 	"encoding/base64"
 	docker "github.com/fsouza/go-dockerclient"
 	"k8s.io/api/extensions/v1beta1"
+	"k8s.io/apimachinery/pkg/api/resource"
 	"k8s.io/apimachinery/pkg/util/intstr"
 
 	"github.com/urfave/cli"
@@ -149,7 +150,6 @@ func Deploy(c *cli.Context) {
 	replica := int32(1)
 
 	step = services.NewStepper("Deploying")
-
 	deployment, err := kub.AppsV1().Deployments("default").Get(service.Name, metav1.GetOptions{})
 	if err != nil {
 		deployment, err = kub.AppsV1().Deployments("default").Create(&appsv1.Deployment{
@@ -172,6 +172,16 @@ func Deploy(c *cli.Context) {
 							corev1.Container{
 								Name:  service.Name,
 								Image: imageUrl + ":" + imageVersion,
+								Resources: corev1.ResourceRequirements{
+									Limits: corev1.ResourceList{
+										"cpu": resource.MustParse("1"),
+										"memory": resource.MustParse("500Mi	"),
+									},
+									Requests: corev1.ResourceList{
+										"cpu":    resource.MustParse("0.25"),
+										"memory": resource.MustParse("250Mi"),
+									},
+								},
 							},
 						},
 					},
@@ -183,39 +193,15 @@ func Deploy(c *cli.Context) {
 			return
 		}
 	} else {
-		deployment, err = kub.AppsV1().Deployments("default").Update(&appsv1.Deployment{
-			TypeMeta: metav1.TypeMeta{
-				Kind: "deployment",
-			},
-			ObjectMeta: metav1.ObjectMeta{
-				Name: service.Name,
-			},
-			Spec: appsv1.DeploymentSpec{
-				Selector: &metav1.LabelSelector{MatchLabels: map[string]string{"app": service.Name}},
-				Replicas: &replica,
-				Template: corev1.PodTemplateSpec{
-					ObjectMeta: metav1.ObjectMeta{
-						Name:   service.Name,
-						Labels: map[string]string{"app": service.Name},
-					},
-					Spec: corev1.PodSpec{
-						Containers: []corev1.Container{
-							corev1.Container{
-								Name:  service.Name,
-								Image: imageUrl + ":" + imageVersion,
-							},
-						},
-					},
-				},
-			},
-		})
+		deployment.Spec.Template.Spec.Containers[0].Image = imageUrl + ":" + imageVersion
+		deployment, err = kub.AppsV1().Deployments("default").Update(deployment)
+
 		if err != nil {
 			step.Fail(err.Error())
 			return
 		}
 
 	}
-
 	for deployment.Status.AvailableReplicas != deployment.Status.Replicas {
 		step.Info("Target: " + strconv.Itoa(int(deployment.Status.Replicas)) + "  Current: " + strconv.Itoa(int(deployment.Status.AvailableReplicas)))
 		deployment, err = kub.AppsV1().Deployments("default").Get(service.Name, metav1.GetOptions{})

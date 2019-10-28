@@ -35,6 +35,7 @@ steps:
     mkdir releases
     go build -v -o $(Build.ArtifactStagingDirectory)/bobby-debian .
     env GOOS=darwin GOARCH=amd64 go build -v -o $(Build.ArtifactStagingDirectory)/bobby-osx .
+
   workingDirectory: '$(modulePath)'
   displayName: 'Get dependencies, then build'
   # GitHub Release
