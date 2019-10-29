@@ -41,6 +41,7 @@ func ServicesList(c *cli.Context) {
 	if err == nil {
 		fmt.Printf("Endpoint IP: %s \n", serv.Status.LoadBalancer.Ingress[0].IP)
 	}
+
 	for _, s := range dbc.Config.Services {
 		if s.Versions == nil {
 			s.Versions = []services.Version{}
