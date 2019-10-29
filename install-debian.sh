@@ -4,5 +4,7 @@ curl -s https://api.github.com/repos/nicolasgere/bobby/releases/latest \
 | cut -d : -f 2,3 \
 | tr -d \" \
 | wget -qi  - --show-progress -O bobby
+echo "Make it executable"
 chmod +x bobby
+echo "Move it to /usr/bin/bobby"
 mv bobby /usr/bin/bobby

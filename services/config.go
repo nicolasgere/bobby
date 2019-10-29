@@ -23,9 +23,10 @@ type Version struct {
 }
 
 type Services struct {
-	Url      string    `json:"url"`
-	Name     string    `json:"name"`
-	Versions []Version `json:"versions"`
+	Url         string    `json:"url"`
+	Name        string    `json:"name"`
+	Environment string    `json:"environment"`
+	Versions    []Version `json:"versions"`
 }
 
 type Config struct {

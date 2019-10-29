@@ -174,8 +174,8 @@ func Deploy(c *cli.Context) {
 								Image: imageUrl + ":" + imageVersion,
 								Resources: corev1.ResourceRequirements{
 									Limits: corev1.ResourceList{
-										"cpu": resource.MustParse("1"),
-										"memory": resource.MustParse("500Mi	"),
+										"cpu":    resource.MustParse("1"),
+										"memory": resource.MustParse("500Mi"),
 									},
 									Requests: corev1.ResourceList{
 										"cpu":    resource.MustParse("0.25"),
@@ -203,7 +203,7 @@ func Deploy(c *cli.Context) {
 
 	}
 	for deployment.Status.AvailableReplicas != deployment.Status.Replicas {
-		step.Info("Target: " + strconv.Itoa(int(deployment.Status.Replicas)) + "  Current: " + strconv.Itoa(int(deployment.Status.AvailableReplicas)))
+		step.Info(" Target: " + strconv.Itoa(int(deployment.Status.Replicas)) + "  Current: " + strconv.Itoa(int(deployment.Status.AvailableReplicas)))
 		deployment, err = kub.AppsV1().Deployments("default").Get(service.Name, metav1.GetOptions{})
 		time.Sleep(10 * time.Second)
 	}
@@ -240,46 +240,48 @@ func Deploy(c *cli.Context) {
 		}
 
 	}
-
-	ir := []v1beta1.IngressRule{}
-	certs := []string{}
-	for _, s := range dbc.Config.Services {
-		certs = append(certs, s.Name+"-certificate")
-		ir = append(ir, v1beta1.IngressRule{
-			Host: s.Url,
-			IngressRuleValue: v1beta1.IngressRuleValue{
-				HTTP: &v1beta1.HTTPIngressRuleValue{
-					Paths: []v1beta1.HTTPIngressPath{
-						{
-							Path: "/",
-							Backend: v1beta1.IngressBackend{
-								ServiceName: s.Name,
-								ServicePort: intstr.IntOrString{
-									IntVal: 8080,
+	if service.Url != "" {
+		ir := []v1beta1.IngressRule{}
+		certs := []string{}
+		for _, s := range dbc.Config.Services {
+			certs = append(certs, s.Name+"-certificate")
+			ir = append(ir, v1beta1.IngressRule{
+				Host: s.Url,
+				IngressRuleValue: v1beta1.IngressRuleValue{
+					HTTP: &v1beta1.HTTPIngressRuleValue{
+						Paths: []v1beta1.HTTPIngressPath{
+							{
+								Path: "/",
+								Backend: v1beta1.IngressBackend{
+									ServiceName: s.Name,
+									ServicePort: intstr.IntOrString{
+										IntVal: 8080,
+									},
 								},
 							},
 						},
 					},
 				},
+			})
+		}
+
+		_, err = kub.ExtensionsV1beta1().Ingresses("default").Update(&v1beta1.Ingress{
+			ObjectMeta: metav1.ObjectMeta{
+				Name: "bobby-ingress",
+				Annotations: map[string]string{
+					"networking.gke.io/managed-certificates": strings.Join(certs, ","),
+				},
+			},
+			Spec: v1beta1.IngressSpec{
+				Rules: ir,
 			},
 		})
+		if err != nil {
+			step.Fail(err.Error())
+			return
+		}
 	}
 
-	_, err = kub.ExtensionsV1beta1().Ingresses("default").Update(&v1beta1.Ingress{
-		ObjectMeta: metav1.ObjectMeta{
-			Name: "bobby-ingress",
-			Annotations: map[string]string{
-				"networking.gke.io/managed-certificates": strings.Join(certs, ","),
-			},
-		},
-		Spec: v1beta1.IngressSpec{
-			Rules: ir,
-		},
-	})
-	if err != nil {
-		step.Fail(err.Error())
-		return
-	}
 	step.Complete()
 
 	step = services.NewStepper("Saving update")

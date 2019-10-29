@@ -61,12 +61,12 @@ func ServicesList(c *cli.Context) {
 			status = fmt.Sprintf("%d / %d (%d)", deployment.Status.ReadyReplicas, deployment.Status.Replicas, deployment.Status.UnavailableReplicas)
 		}
 		data = append(data, []string{
-			"web", status, s.Name, endpoint, version, lastDeploy,
+			s.Environment, "web", status, s.Name, endpoint, version, lastDeploy,
 		})
 	}
 
 	table := tablewriter.NewWriter(os.Stdout)
-	table.SetHeader([]string{"Type", "Status", "Name", "Url", "Version", "Last deploy"})
+	table.SetHeader([]string{"Environment", "Type", "Status", "Name", "Url", "Version", "Last deploy"})
 
 	for _, v := range data {
 		table.Append(v)

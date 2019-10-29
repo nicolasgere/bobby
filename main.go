@@ -6,7 +6,6 @@ import (
 	environments "bobby/commands/environments"
 	commands "bobby/commands/init"
 	commands2 "bobby/commands/services"
-	"fmt"
 	"github.com/urfave/cli"
 	"log"
 	"math/rand"
@@ -77,6 +76,13 @@ func main() {
 					Usage:     "Scale service",
 					Action:    commands2.ServicesScale,
 				},
+				{
+					Name:      "publish",
+					Aliases:   []string{"p"},
+					ArgsUsage: "[NAME] [URL]",
+					Usage:     "Publish a service",
+					Action:    commands2.ServicesPublish,
+				},
 			},
 		},
 		{
@@ -118,47 +124,7 @@ func main() {
 	}
 
 	err := app.Run(os.Args)
-	res := GenerateDocs(app)
-	fmt.Println(res)
-
 	if err != nil {
 		log.Fatal(err)
 	}
 }
-
-//
-//type cmdDoc struct {
-//	Name        string
-//	Description string
-//	Example     string
-//	Args        map[string]string
-//}
-//
-//func GenerateDocs(app *cli.App) (result string) {
-//	templateDoc, err := ioutil.ReadFile("templates/template")
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	t, err := template.New("Documentation").Parse(string(templateDoc))
-//	if err != nil {
-//		panic(err)
-//	}
-//
-//	for _, command := range app.Commands {
-//		cd := cmdDoc{}
-//		cd.Name = command.Usage
-//		cd.Description = command.Description
-//		cd.Example = command.UsageText
-//		command.
-//	}
-//
-//	if len(app.Flags) > 0 {
-//		buffer.WriteString("## Global Flags\n\n")
-//		for _, flag := range app.Flags {
-//			buffer.WriteString(fmt.Sprintf("- `--%s`\n", flag.GetName()))
-//		}
-//		buffer.WriteString("\n\n")
-//	}
-//	return buffer.String()
-//}
