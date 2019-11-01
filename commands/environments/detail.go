@@ -3,12 +3,13 @@ package commands
 import (
 	"bobby/services"
 	"fmt"
-	"github.com/olekukonko/tablewriter"
-	"github.com/urfave/cli"
-	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"log"
 	"os"
 	"strings"
+
+	"github.com/olekukonko/tablewriter"
+	"github.com/urfave/cli"
+	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func EnvironmentDetail(c *cli.Context) {
@@ -34,7 +35,7 @@ func EnvironmentDetail(c *cli.Context) {
 	step.Complete()
 
 	//// GET CLUSTER
-	step = services.NewStepper("Accecing cluster")
+	step = services.NewStepper("Accessing cluster")
 	if dbc.Config.Environments == nil {
 		dbc.Config.Environments = []string{}
 	}
