@@ -39,7 +39,9 @@ func ServicesList(c *cli.Context) {
 
 	serv, err := kub.ExtensionsV1beta1().Ingresses("default").Get("bobby-ingress", v1.GetOptions{})
 	if err == nil {
-		fmt.Printf("Endpoint IP: %s \n", serv.Status.LoadBalancer.Ingress[0].IP)
+		if len(serv.Status.LoadBalancer.Ingress) > 0 {
+			fmt.Printf("Endpoint IP: %s \n", serv.Status.LoadBalancer.Ingress[0].IP)
+		}
 	}
 
 	for _, s := range dbc.Config.Services {

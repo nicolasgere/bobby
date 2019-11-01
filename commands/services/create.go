@@ -61,30 +61,6 @@ func ServicesCreate(c *cli.Context) {
 
 	dbc.Config.Services = append(dbc.Config.Services, &services.Services{Name: name, Environment: env})
 
-	//	file := fmt.Sprintf(`
-	//apiVersion: networking.gke.io/v1beta1
-	//kind: ManagedCertificate
-	//metadata:
-	//  name: %s-certificate
-	//spec:
-	//  domains:
-	//    - %s
-	//`, name, url)
-	//	f, err := ioutil.TempFile("", "")
-	//	f.Write([]byte(file))
-	//	out, err := exec.Command("sh", "-c", "gcloud --project="+project.ProjectId+" container clusters get-credentials bobby-cluster --zone us-east1-c").Output()
-	//	if err != nil {
-	//		//step.Fail("Cannot get gcloud token")
-	//		log.Fatal(err)
-	//		return
-	//	}
-	//	fmt.Println(out)
-	//	out, err = exec.Command("sh", "-c", "kubectl apply -f "+f.Name()).Output()
-	//	if err != nil {
-	//		//step.Fail("Cannot get gcloud token")
-	//		log.Fatal(err)
-	//		return
-	//	}
 	dbc.Save()
 	step.Complete()
 }
