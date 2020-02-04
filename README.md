@@ -1,6 +1,6 @@
 # Bobby 🚀
 
-🚀 CLI tool to manage google cloud as simple as heroku. We dont have to choose between cost and simplicity. We want both !
+🚀 CLI tool to manage google cloud as simply as heroku. We dont have to choose between cost and simplicity. We want both !
 
 <img src="docs/render1567721170211.gif" height="480">
 <br>
@@ -19,8 +19,7 @@ Visit the [documentation](https://mybobby.gitbook.io/cli/ "documentation") to in
 - On-premise, Bobby is just like your personnal DevOps
 - Continious integration
 - Monitoring
-- Alertin
-- Network
+- Alerting
 
 
 ## Feature roadmap
